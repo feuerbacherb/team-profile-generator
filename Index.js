@@ -1,4 +1,6 @@
 const inquirer = require('inquirer');
+const writeHTML = require('./lib/generateHTML');
+const { writeFile, copyFile } = require('./utils/generate-site.js');
 
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
@@ -63,12 +65,11 @@ const askEngOrIntern = () => {
       ])
       .then(function(data) {
          if (data.choice === "Add an Engineer") {
-            addEngineer(omegaTeamg);
+            return addEngineer(omegaTeam);
          } else if (data.choice === "Add an Intern") {
-            console.log("addIntern()");
+            return addIntern(omegaTeam);
          } else {
-            console.log(omegaTeam);
-            console.log('Time to write the code to write stuff');
+            return omegaTeam;
          }
       });
 }
@@ -77,7 +78,6 @@ const addEngineer = omegaTeam => {
    if (!omegaTeam.engineers) {
       omegaTeam.engineers = [];
    }
-
    return inquirer
       .prompt([
          {
@@ -104,10 +104,59 @@ const addEngineer = omegaTeam => {
       .then(function(data) {
          const eng = new Engineer(data.engName, data.engID, data.engEmail, data.engGitHub);
          omegaTeam.engineers.push(eng);
-         askEngOrIntern();
+         return askEngOrIntern(omegaTeam);
       })
 }
 
+const addIntern = omegaTeam => {
+   if (!omegaTeam.interns) {
+      omegaTeam.interns = [];
+   }
+
+   return inquirer
+      .prompt([
+         {
+            type: 'input',
+            name: 'intName',
+            message: "What is the intern's name?"
+         },
+         {
+            type: 'input',
+            name: 'intID',
+            message: "What is the intern's employee ID?"
+         },
+         {
+            type: 'input',
+            name: 'intEmail',
+            message: "What is the intern's email?"
+         },
+         {
+            type: 'input',
+            name: 'intSchool',
+            message: "What is the intern's school?"
+         }
+      ])
+      .then(function(data) {
+         const intern = new Intern(data.intName, data.intID, data.intEmail, data.intSchool);
+         omegaTeam.interns.push(intern);
+         return askEngOrIntern(omegaTeam);
+      })
+}
+
+//writeHTML(testData);
+
+
+
+
 promptUser()
    .then(addManager)
-   .then(askEngOrIntern);
+   .then(askEngOrIntern)
+   .then(omegaTeam => {
+      return writeHTML(omegaTeam);
+   })
+   .then(pageHTML => {
+      return writeFile(pageHTML);
+   })
+   .then(writeFileResponse => {
+      console.log(writeFileResponse);
+   });
