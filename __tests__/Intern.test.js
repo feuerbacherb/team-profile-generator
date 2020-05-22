@@ -44,3 +44,10 @@ test("Can the object return the Intern's role of Intern?", () => {
    const intern = new Intern('Pontmercy, Marius', 24603, 'pontmercym@gmail.com', 'University of Alabama');
    expect(intern.getRole()).toBe(role);
 });
+
+// test to see if the object returns the school
+test("Can the object return the Intern's school?", () => {
+   const school = 'University of Alabama';
+   const intern = new Intern('Pontmercy, Marius', 24603, 'pontmercym@gmail.com', school);
+   expect(intern.getSchool()).toBe(school);
+})
