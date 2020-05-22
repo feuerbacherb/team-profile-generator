@@ -63,7 +63,7 @@ const askEngOrIntern = () => {
       ])
       .then(function(data) {
          if (data.choice === "Add an Engineer") {
-            addEngineer(omegaTeam);
+            addEngineer(omegaTeamg);
          } else if (data.choice === "Add an Intern") {
             console.log("addIntern()");
          } else {
